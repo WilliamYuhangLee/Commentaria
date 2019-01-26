@@ -4,6 +4,9 @@
 .idea/tasks.xml
 .idea/usage.statistics.xml
 
+# Virtual environments
+venv/
+
 # Created by .ignore support plugin (hsz.mobi)
 ### macOS template
 # General
@@ -32,4 +35,3 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
-

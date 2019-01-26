@@ -2,6 +2,7 @@
   <dictionary name="WilliamLee">
     <words>
       <w>commentaria</w>
+      <w>gunicorn</w>
       <w>navbar</w>
       <w>toggler</w>
     </words>
