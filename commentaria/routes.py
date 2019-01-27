@@ -47,7 +47,7 @@ def register():
         db.session.commit()
         flash("Your account has been created! You are now logged in.", category="success")
         return redirect(url_for("home"))
-    return render_template("registration.html", title="Join "+APP_NAME, app_name=APP_NAME, form=form)
+    return render_template("registration.html", title="Join "+APP_NAME, form=form)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -66,7 +66,7 @@ def login():
                 return redirect(url_for("home"))
         else:
             flash("Login failed. Please check your email and password", category="danger")
-    return render_template("login.html", title="Sign in to "+APP_NAME, app_name=APP_NAME, form=form)
+    return render_template("login.html", title="Sign in to "+APP_NAME, form=form)
 
 
 @app.route("/logout")
