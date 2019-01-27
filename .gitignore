@@ -1,8 +1,14 @@
+# Project specific
+commentaria/static/resources/profile_pictures/*
+!commentaria/static/resources/profile_pictures/default_profile_picture.png
+
 # IDE related
 ### JetBrains
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/usage.statistics.xml
+.idea/dataSources.*
+.idea/dataSources
 
 # Created by .ignore support plugin (hsz.mobi)
 ### macOS template
@@ -138,4 +144,3 @@ venv.bak/
 
 # mypy
 .mypy_cache/
-
