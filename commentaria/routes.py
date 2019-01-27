@@ -6,23 +6,9 @@ from flask import render_template, url_for, flash, redirect, request
 from flask_login import login_user, current_user, logout_user, login_required
 
 from commentaria import app, db, bcrypt
-from commentaria.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from commentaria.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from commentaria.models import User, Post
 
-posts = [
-    {
-        "author": "William Lee",
-        "title": "First Post",
-        "content": "First post!",
-        "date_posted": "Jan 1, 2018"
-    },
-    {
-        "author": "William Lee",
-        "title": "Second Post",
-        "content": "Second post!",
-        "date_posted": "Jan 2, 2018"
-    }
-]
 
 # Local parameters for use
 APP_NAME = app.config["APP_NAME"]
@@ -31,6 +17,7 @@ APP_NAME = app.config["APP_NAME"]
 @app.route("/")
 @app.route("/home")
 def home():
+    posts = Post.query.all()
     return render_template("home.html", posts=posts)
 
 
@@ -52,7 +39,7 @@ def register():
         login_user(user)
         flash("Your account has been created! You are now logged in.", category="success")
         return redirect(url_for("home"))
-    return render_template("registration.html", title="Join "+APP_NAME, form=form)
+    return render_template("registration.html", title="Join " + APP_NAME, form=form)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -71,7 +58,7 @@ def login():
                 return redirect(url_for("home"))
         else:
             flash("Login failed. Please check your email and password", category="danger")
-    return render_template("login.html", title="Sign in to "+APP_NAME, form=form)
+    return render_template("login.html", title="Sign in to " + APP_NAME, form=form)
 
 
 @app.route("/logout")
@@ -119,3 +106,16 @@ def account():
         form.email.data = current_user.email
     profile_picture = url_for("static", filename="resources/profile_pictures/" + current_user.profile_picture)
     return render_template("account.html", title="Account", profile_picture=profile_picture, form=form)
+
+
+@app.route("/post/new", methods=["GET", "POST"])
+@login_required
+def create_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash(f"You have successfully posted to {APP_NAME}!", category="success")
+        return redirect(url_for("home"))
+    return render_template("create_post.html", title="Post to " + APP_NAME, form=form)
