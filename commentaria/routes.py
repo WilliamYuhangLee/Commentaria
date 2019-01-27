@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect
 
-from commentaria import app
+from commentaria import app, db, bcrypt
 from commentaria.forms import RegistrationForm, LoginForm
 from commentaria.models import User, Post
 
@@ -38,7 +38,11 @@ def about():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        flash(f"Account created for {form.username.data}!", category="success")
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
+        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        db.session.add(user)
+        db.session.commit()
+        flash("Your account has been created! You are now logged in.", category="success")
         return redirect(url_for("home"))
     return render_template("registration.html", title="Join "+APP_NAME, app_name=APP_NAME, form=form)
 

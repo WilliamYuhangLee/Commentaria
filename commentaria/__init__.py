@@ -11,5 +11,6 @@ app.config.update(
 )
 
 db = SQLAlchemy(app)
+bcrypt = Bcrypt(app)
 
 from commentaria import routes
