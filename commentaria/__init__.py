@@ -14,5 +14,7 @@ app.config.update(
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
+login_manager.login_view = "login" # which function to login
+login_manager.login_message_category = "info" # set login message style (Bootstrap)
 
 from commentaria import routes

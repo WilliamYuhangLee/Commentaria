@@ -1,5 +1,5 @@
-from flask import render_template, url_for, flash, redirect
-from flask_login import login_user, current_user, logout_user
+from flask import render_template, url_for, flash, redirect, request
+from flask_login import login_user, current_user, logout_user, login_required
 
 from commentaria import app, db, bcrypt
 from commentaria.forms import RegistrationForm, LoginForm
@@ -59,7 +59,11 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
-            return redirect(url_for("home"))
+            next_page = request.args.get("next") # check if there is pending request
+            if next_page:
+                return redirect(next_page)
+            else:
+                return redirect(url_for("home"))
         else:
             flash("Login failed. Please check your email and password", category="danger")
     return render_template("login.html", title="Sign in to "+APP_NAME, app_name=APP_NAME, form=form)
@@ -69,3 +73,9 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("home"))
+
+
+@app.route("/account")
+@login_required
+def account():
+    return render_template("account.html", title="Account")
