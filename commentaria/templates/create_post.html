@@ -34,8 +34,9 @@
                     {% endif %}
                 </div>
             </fieldset>
-            <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
+            <div class="form-group text-right">
+                <a class="btn btn-outline-secondary" href="{{ url_for('home') }}">Cancel</a>
+                {{ form.submit(class="btn btn-info") }}
             </div>
         </form>
     </div>

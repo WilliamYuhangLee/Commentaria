@@ -4,14 +4,19 @@
         <img class="rounded-circle article-img"
              src="{{ url_for('static', filename='resources/profile_pictures/' + post.author.profile_picture) }}">
         <div class="media-body">
-            <div class="article-metadata">
-                <a class="mr-2" href="#">{{ post.author.username }}</a>
-                <small class="text-muted">{{ post.date_posted.strftime("%X - %x") }}</small>
+            <div class="article-metadata d-flex justify-content-between">
+                <div class="text-left mt-1 mb-1">
+                    <a class="" href="#">{{ post.author.username }}</a>
+                    <small class="text-muted">{{ post.date_posted.strftime("%X - %x") }}</small>
+                </div>
                 {% if post.author == current_user %}
-                    <div>
-                        <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('edit_post', post_id=post.id) }}">Edit</a>
-                        <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal"
-                                data-target="#deleteModal">
+                    <div class="text-right mb-1">
+                        <a class="btn btn-outline-info btn-sm"
+                           href="{{ url_for('edit_post', post_id=post.id) }}">
+                            Edit
+                        </a>
+                        <button type="button" class="btn btn-outline-danger btn-sm"
+                                data-toggle="modal" data-target="#deleteModal">
                             Delete
                         </button>
                     </div>

@@ -143,7 +143,7 @@ def edit_post(post_id):
     elif request.method == "GET":
         form.title.data = post.title
         form.content.data = post.content
-        return render_template("edit_post.html", title="Edit Post", form=form)
+        return render_template("edit_post.html", title="Edit Post", form=form, post_id=post_id)
 
 
 @app.route("/post/<int:post_id>/delete", methods=["POST"])
