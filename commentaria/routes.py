@@ -83,8 +83,9 @@ def update_profile_picture(form_picture):
 
 
 def delete_profile_picture(filename):
-    file_path = os.path.join(app.root_path, "static/resources/profile_pictures", filename)
-    os.remove(file_path)
+    if filename != "default_profile_picture.png":
+        file_path = os.path.join(app.root_path, "static/resources/profile_pictures", filename)
+        os.remove(file_path)
 
 
 @app.route("/account", methods=["GET", "POST"])
