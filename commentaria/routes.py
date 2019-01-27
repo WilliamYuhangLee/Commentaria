@@ -2,11 +2,11 @@ import os, secrets
 
 from PIL import Image
 
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, abort
 from flask_login import login_user, current_user, logout_user, login_required
 
 from commentaria import app, db, bcrypt
-from commentaria.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
+from commentaria.forms import RegistrationForm, LoginForm, UpdateAccountForm, CreatePostForm, EditPostForm
 from commentaria.models import User, Post
 
 
@@ -111,7 +111,7 @@ def account():
 @app.route("/post/new", methods=["GET", "POST"])
 @login_required
 def create_post():
-    form = PostForm()
+    form = CreatePostForm()
     if form.validate_on_submit():
         post = Post(title=form.title.data, content=form.content.data, author=current_user)
         db.session.add(post)
@@ -119,3 +119,28 @@ def create_post():
         flash(f"You have successfully posted to {APP_NAME}!", category="success")
         return redirect(url_for("home"))
     return render_template("create_post.html", title="Post to " + APP_NAME, form=form)
+
+
+@app.route("/post/<int:post_id>")
+def view_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    return render_template("view_post.html", title=post.title, post=post)
+
+
+@app.route("/post/<int:post_id>/edit", methods=["GET", "POST"])
+@login_required
+def edit_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if post.author != current_user:
+        abort(403)
+    form = EditPostForm()
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.content = form.content.data
+        db.session.commit()
+        flash("Your edit has been saved!", category="success")
+        return redirect(url_for("view_post", post_id=post_id))
+    elif request.method == "GET":
+        form.title.data = post.title
+        form.content.data = post.content
+        return render_template("edit_post.html", title="Edit Post", form=form)
