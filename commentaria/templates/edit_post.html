@@ -35,7 +35,7 @@
                 </div>
             </fieldset>
             <div class="form-group text-right">
-                <a class="btn btn-outline-secondary" href="{{ url_for('view_post', post_id=post_id) }}">Cancel</a>
+                <a class="btn btn-outline-secondary" href="{{ url_for('posts.view_post', post_id=post_id) }}">Cancel</a>
                 {{ form.submit(class="btn btn-info") }}
             </div>
         </form>
