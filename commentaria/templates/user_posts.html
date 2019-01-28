@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 {% block content %}
     <h1 class="mb-3">Posts by {{ user.username }} ({{ posts.total }})</h1>
     {% for post in posts.items %}
@@ -9,7 +9,7 @@
             <div class="media-body">
                 <div class="article-metadata">
                     <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
-                    <small class="text-muted">{{ post.date_posted.strftime("%X - %x") }}</small>
+                    <small class="text-muted">{{ moment(post.date_posted).calendar() }}</small>
                 </div>
                 <h2><a class="article-title" href="{{ url_for('posts.view_post', post_id=post.id) }}">{{ post.title }}</a>
                 </h2>
@@ -33,3 +33,7 @@
         {% endif %}
     {% endfor %}
 {% endblock content %}
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_moment() }}
+{% endblock scripts %}

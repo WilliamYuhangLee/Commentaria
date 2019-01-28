@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 {% block content %}
     <article class="media content-section">
         <img class="rounded-circle article-img"
@@ -7,8 +7,10 @@
         <div class="media-body">
             <div class="article-metadata d-flex justify-content-between">
                 <div class="text-left mt-1 mb-1">
-                    <a class="" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
-                    <small class="text-muted">{{ post.date_posted.strftime("%X - %x") }}</small>
+                    <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">
+                        {{ post.author.username }}
+                    </a>
+                    <small class="text-muted">{{ moment(post.date_posted).calendar() }}</small>
                 </div>
                 {% if post.author == current_user %}
                     <div class="text-right mb-1">
@@ -52,3 +54,7 @@
         </div>
     </div>
 {% endblock content %}
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_moment() }}
+{% endblock scripts %}
