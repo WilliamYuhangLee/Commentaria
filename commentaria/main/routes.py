@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, abort
 
 from commentaria.models import Post
 
@@ -15,4 +15,5 @@ def home():
 
 @main.route("/about")
 def about():
+    abort(500)
     return render_template("about.html", title="About")

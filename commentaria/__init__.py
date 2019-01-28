@@ -26,9 +26,11 @@ def create_app(config_class=Config):
     from commentaria.users.routes import users
     from commentaria.posts.routes import posts
     from commentaria.main.routes import main
+    from commentaria.errors.handler import errors
 
     app.register_blueprint(users)
     app.register_blueprint(posts)
     app.register_blueprint(main)
+    app.register_blueprint(errors)
 
     return app
