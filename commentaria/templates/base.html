@@ -60,17 +60,18 @@
                     {% endfor %}
                 {% endif %}
             {% endwith %}
+            <!-- content block -->
             {% block content %}{% endblock content %}
         </div>
         <div class="col-md-4">
             <div class="content-section">
-                <h3>Our Sidebar</h3>
-                <p class='text-muted'>You can put any information here you'd like.
+                <h3>Sidebar</h3>
+                <p class='text-muted'>This sidebar has not been implemented yet.
                 <ul class="list-group">
+                    <li class="list-group-item list-group-item-light">Home</li>
                     <li class="list-group-item list-group-item-light">Latest Posts</li>
-                    <li class="list-group-item list-group-item-light">Announcements</li>
-                    <li class="list-group-item list-group-item-light">Calendars</li>
-                    <li class="list-group-item list-group-item-light">etc</li>
+                    <li class="list-group-item list-group-item-light">My Posts</li>
+                    <li class="list-group-item list-group-item-light">Account</li>
                 </ul>
                 </p>
             </div>
@@ -78,7 +79,7 @@
     </div>
 </main>
 
-<!-- Bootstrap optional JavaScript -->
+<!-- Bootstrap scripts -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -89,6 +90,8 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
         integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
+
+<!-- Scripts extensions -->
 {% block scripts %}
 {% endblock %}
 </body>
