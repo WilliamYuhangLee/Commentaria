@@ -1,30 +1,39 @@
-import os, secrets
-from PIL import Image
+import secrets
 from flask import url_for
 from flask import current_app as app
 from flask_mail import Message
+import cloudinary, cloudinary.uploader
 
 from commentaria import mail
 
 
+def _profile_picture_folder():
+    return app.config["APP_NAME"] + "/profile_pictures/"
+
+
 def update_profile_picture(form_picture):
-    random_hex = secrets.token_hex(8)  # Randomize picture filename
-    _, file_extension = os.path.splitext(form_picture.filename)  # Extract picture file type
-    filename = random_hex + file_extension  # Join filename with file type
-    file_path = os.path.join(app.root_path, "static/resources/profile_pictures", filename)  # Get path
-
-    output_size = (360, 360)  # Compress target size
-    i = Image.open(form_picture)
-    i.thumbnail(output_size)  # Compress to target size
-
-    i.save(file_path)  # Save to target path
-    return filename  # Return saved filename
+    # Randomize picture filename
+    random_filename = secrets.token_hex(8)
+    # Upload image to Cloudinary
+    cloudinary.uploader.upload(form_picture, public_id=random_filename, use_filename=False,
+                               folder=_profile_picture_folder(),
+                               transformation=[{"width": 360, "height": 360}])
+    # Return saved filename
+    return random_filename
 
 
 def delete_profile_picture(filename):
     if filename != "default_profile_picture.png":
-        file_path = os.path.join(app.root_path, "static/resources/profile_pictures", filename)
-        os.remove(file_path)
+        result = cloudinary.uploader.destroy(_profile_picture_folder() + filename)
+        app.logger.info("Cloudinary deletion: " + str(result))
+
+
+def profile_picture_url(filename, params="f_auto,q_auto,fl_lossy"):
+    if filename == "default_profile_picture.png":
+        return url_for("static", filename="resources/profile_pictures/default_profile_picture.png")
+    else:
+        return "https://res.cloudinary.com/" + app.config["CLOUDINARY_CLOUD_NAME"] + "/image/upload/" \
+               + params + "/" + _profile_picture_folder() + filename
 
 
 def send_password_reset_email(user):
@@ -46,4 +55,3 @@ To contact for support, send an email to {app.config["DEV_MAIL"]}
 {app.config["APP_NAME"]}
 '''
     mail.send(message)
-

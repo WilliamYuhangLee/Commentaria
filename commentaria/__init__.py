@@ -4,6 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_moment import Moment
+import cloudinary
 
 from commentaria.config import Config
 
@@ -27,6 +28,10 @@ def create_app(config_class=Config):
     mail.init_app(app)
     moment.init_app(app)
 
+    cloudinary.config(cloud_name=app.config["CLOUDINARY_CLOUD_NAME"],
+                      api_key=app.config["CLOUDINARY_API_KEY"],
+                      api_secret=app.config["CLOUDINARY_SECRET"])
+
     from commentaria.users.routes import users
     from commentaria.posts.routes import posts
     from commentaria.main.routes import main
@@ -36,5 +41,11 @@ def create_app(config_class=Config):
     app.register_blueprint(posts)
     app.register_blueprint(main)
     app.register_blueprint(errors)
+
+    from commentaria.context_processor import context_processors
+
+    @app.context_processor
+    def utility_processors():
+        return context_processors
 
     return app

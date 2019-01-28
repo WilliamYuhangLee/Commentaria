@@ -5,9 +5,11 @@ from flask_login import current_user, login_user, logout_user, login_required
 from commentaria import db, bcrypt
 from commentaria.models import User, Post
 from commentaria.users.forms import RegistrationForm, LoginForm, UpdateAccountForm, RequestResetForm, ResetPasswordForm
-from commentaria.users.utils import update_profile_picture, delete_profile_picture, send_password_reset_email
+from commentaria.users.utils import (update_profile_picture, delete_profile_picture, send_password_reset_email,
+                                     profile_picture_url)
 
 users = Blueprint("users", __name__)
+
 
 @users.route("/registration", methods=["GET", "POST"])
 def register():
@@ -57,8 +59,8 @@ def account():
     if form.validate_on_submit():
         if form.profile_picture.data:
             delete_profile_picture(current_user.profile_picture)
-            profile_picture_file = update_profile_picture(form.profile_picture.data)
-            current_user.profile_picture = profile_picture_file
+            profile_picture_filename = update_profile_picture(form.profile_picture.data)
+            current_user.profile_picture = profile_picture_filename
         current_user.username = form.username.data
         current_user.email = form.email.data
         db.session.commit()
@@ -67,7 +69,7 @@ def account():
     elif request.method == "GET":
         form.username.data = current_user.username
         form.email.data = current_user.email
-    profile_picture = url_for("static", filename="resources/profile_pictures/" + current_user.profile_picture)
+    profile_picture = profile_picture_url(current_user.profile_picture)
     return render_template("account.html", title="Account", profile_picture=profile_picture, form=form)
 
 

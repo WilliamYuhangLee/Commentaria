@@ -16,3 +16,6 @@ class Config(object):
     MAIL_USERNAME = os.getenv("MAIL_USERNAME")
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
     DEV_MAIL = os.getenv("DEV_MAIL")
+    CLOUDINARY_CLOUD_NAME = os.getenv("CLOUDINARY_CLOUD_NAME")
+    CLOUDINARY_API_KEY = os.getenv("CLOUDINARY_API_KEY")
+    CLOUDINARY_SECRET = os.getenv("CLOUDINARY_SECRET")

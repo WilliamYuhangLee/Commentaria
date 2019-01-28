@@ -4,7 +4,7 @@
     {% for post in posts.items %}
         <article class="media content-section">
             <img class="rounded-circle article-img"
-                 src="{{ url_for('static', filename='resources/profile_pictures/' + post.author.profile_picture) }}"
+                 src="{{ profile_picture_url(post.author.profile_picture) }}"
                  onerror="this.src='{{ url_for('static', filename='resources/profile_pictures/default_profile_picture.png') }}'">
             <div class="media-body">
                 <div class="article-metadata">
