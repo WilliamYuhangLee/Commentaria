@@ -1,9 +1,10 @@
 import os, secrets
 from PIL import Image
 from flask import url_for
+from flask import current_app as app
 from flask_mail import Message
 
-from commentaria import app, mail
+from commentaria import mail
 
 
 def update_profile_picture(form_picture):

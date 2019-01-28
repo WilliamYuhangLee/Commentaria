@@ -1,10 +1,12 @@
 from datetime import datetime
 
+from flask import current_app as app
+
 from flask_login import UserMixin
 
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
-from commentaria import app, db, login_manager
+from commentaria import db, login_manager
 
 
 # Manager user session

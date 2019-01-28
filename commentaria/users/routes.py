@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, url_for, redirect, flash, request
-from flask import current_app
+from flask import current_app as app
 from flask_login import current_user, login_user, logout_user, login_required
 
 from commentaria import db, bcrypt
@@ -22,7 +22,7 @@ def register():
         login_user(user)
         flash("Your account has been created! You are now logged in.", category="success")
         return redirect(url_for("main.home"))
-    return render_template("registration.html", title="Join " + current_app.config["APP_NAME"], form=form)
+    return render_template("registration.html", title="Join " + app.config["APP_NAME"], form=form)
 
 
 @users.route("/login", methods=["GET", "POST"])
@@ -41,7 +41,7 @@ def login():
                 return redirect(url_for("main.home"))
         else:
             flash("Login failed. Please check your email and password", category="danger")
-    return render_template("login.html", title="Sign in to " + current_app.config["APP_NAME"], form=form)
+    return render_template("login.html", title="Sign in to " + app.config["APP_NAME"], form=form)
 
 
 @users.route("/logout")

@@ -16,6 +16,3 @@ class Config(object):
     MAIL_USERNAME = os.getenv("MAIL_USERNAME")
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
     DEV_MAIL = os.getenv("DEV_MAIL")
-
-
-app_config = Config()

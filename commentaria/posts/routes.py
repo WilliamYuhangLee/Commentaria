@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, url_for, flash, redirect, request, abort
-from flask import current_app
+from flask import current_app as app
 from flask_login import current_user, login_required
 
 from commentaria import db
@@ -17,9 +17,9 @@ def create_post():
         post = Post(title=form.title.data, content=form.content.data, author=current_user)
         db.session.add(post)
         db.session.commit()
-        flash(f"You have successfully posted to {current_app.config['APP_NAME']}!", category="success")
+        flash(f"You have successfully posted to {app.config['APP_NAME']}!", category="success")
         return redirect(url_for("main.home"))
-    return render_template("create_post.html", title="Post to " + current_app.config["APP_NAME"], form=form)
+    return render_template("create_post.html", title="Post to " + app.config["APP_NAME"], form=form)
 
 
 @posts.route("/post/<int:post_id>")
