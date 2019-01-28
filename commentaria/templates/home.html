@@ -3,7 +3,8 @@
     {% for post in posts %}
         <article class="media content-section">
             <img class="rounded-circle article-img"
-                 src="{{ url_for('static', filename='resources/profile_pictures/' + post.author.profile_picture) }}">
+                 src="{{ url_for('static', filename='resources/profile_pictures/' + post.author.profile_picture) }}"
+                 onerror="this.src='{{ url_for('static', filename='resources/profile_pictures/default_profile_picture.png') }}'">
             <div class="media-body">
                 <div class="article-metadata">
                     <a class="mr-2" href="#">{{ post.author.username }}</a>

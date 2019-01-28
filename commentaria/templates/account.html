@@ -2,7 +2,8 @@
 {% block content %}
     <div class="content-section">
         <div class="media">
-            <img class="rounded-circle account-img" src="{{ profile_picture }}">
+            <img class="rounded-circle account-img" src="{{ profile_picture }}"
+                 onerror="this.src='{{ url_for('static', filename='resources/profile_pictures/default_profile_picture.png') }}'">
             <div class="media-body">
                 <h2 class="account-heading">{{ current_user.username }}</h2>
                 <p class="text-secondary">{{ current_user.email }}</p>
