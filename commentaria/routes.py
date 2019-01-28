@@ -4,11 +4,12 @@ from PIL import Image
 
 from flask import render_template, url_for, flash, redirect, request, abort
 from flask_login import login_user, current_user, logout_user, login_required
+from flask_mail import Message
 
-from commentaria import app, db, bcrypt
-from commentaria.forms import RegistrationForm, LoginForm, UpdateAccountForm, CreatePostForm, EditPostForm
+from commentaria import app, db, bcrypt, mail
+from commentaria.forms import (RegistrationForm, LoginForm, UpdateAccountForm, CreatePostForm, EditPostForm, \
+                               RequestResetForm, ResetPasswordForm)
 from commentaria.models import User, Post
-
 
 # Local parameters for use
 APP_NAME = app.config["APP_NAME"]
@@ -52,7 +53,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
-            next_page = request.args.get("next") # check if there is pending request
+            next_page = request.args.get("next")  # check if there is pending request
             if next_page:
                 return redirect(next_page)
             else:
@@ -69,7 +70,6 @@ def logout():
 
 
 def update_profile_picture(form_picture):
-
     random_hex = secrets.token_hex(8)  # Randomize picture filename
     _, file_extension = os.path.splitext(form_picture.filename)  # Extract picture file type
     filename = random_hex + file_extension  # Join filename with file type
@@ -80,7 +80,7 @@ def update_profile_picture(form_picture):
     i.thumbnail(output_size)  # Compress to target size
 
     i.save(file_path)  # Save to target path
-    return filename  # Return saved full filename
+    return filename  # Return saved filename
 
 
 def delete_profile_picture(filename):
@@ -102,7 +102,7 @@ def account():
         current_user.email = form.email.data
         db.session.commit()
         flash("Your account info has been updated!", category="success")
-        return redirect(url_for("account")) # Post-Redirect-Get pattern to avoid resubmitting forms
+        return redirect(url_for("account"))  # Post-Redirect-Get pattern to avoid resubmitting forms
     elif request.method == "GET":
         form.username.data = current_user.username
         form.email.data = current_user.email
@@ -164,7 +164,59 @@ def delete_post(post_id):
 def user_posts(username):
     page = request.args.get("page", 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
-    posts = Post.query.filter_by(author=user)\
-        .order_by(Post.date_posted.desc())\
+    posts = Post.query.filter_by(author=user) \
+        .order_by(Post.date_posted.desc()) \
         .paginate(page=page, per_page=5)
     return render_template("user_posts.html", posts=posts, user=user)
+
+
+def send_password_reset_email(user):
+    expire_sec = 1800
+    token = user.get_reset_token(expire_sec=expire_sec)
+    message = Message(subject="Password Reset",
+                      sender=(f"{app.config['APP_NAME']}", f"{app.config['MAIL_USERNAME']}"),
+                      recipients=[user.email])
+    message.body = f'''To reset your password, click the following link:
+{url_for('reset_password_token', token=token, _external=True)}
+This link will expire in {expire_sec // 60} minutes.
+    
+If you did not make this request, please ignore this email.
+
+Please do not reply to this email address.
+
+To contact for support, send an email to {app.config["DEV_MAIL"]}
+
+{app.config["APP_NAME"]}
+'''
+    mail.send(message)
+
+
+@app.route("/reset_password", methods=["GET", "POST"])
+def reset_password_request():
+    if current_user.is_authenticated:
+        return redirect(url_for("home"))
+    form = RequestResetForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        send_password_reset_email(user)
+        flash("An email has been sent with instructions to reset your password.", category="info")
+        return redirect(url_for("login"))
+    return render_template("reset_password_request.html", title="Reset Password", form=form)
+
+
+@app.route("/reset_password/<token>", methods=["GET", "POST"])
+def reset_password_token(token):
+    if current_user.is_authenticated:
+        return redirect(url_for("home"))
+    user = User.verify_reset_token(token)
+    if user is None:
+        flash("The token is invalid or expired.", category="Warning")
+        return redirect(url_for("reset_password_request"))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
+        user.password = hashed_password
+        db.session.commit()
+        flash("Your password has been updated! Try log in with the new password.", category="success")
+        return redirect(url_for("login"))
+    return render_template("reset_password_token.html", title="Reset Password", form=form)

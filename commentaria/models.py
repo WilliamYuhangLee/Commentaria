@@ -2,7 +2,9 @@ from datetime import datetime
 
 from flask_login import UserMixin
 
-from commentaria import db, login_manager
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+
+from commentaria import app, db, login_manager
 
 
 # Manager user session
@@ -20,6 +22,20 @@ class User(db.Model, UserMixin):
     profile_picture = db.Column(db.String(40), nullable=False, default="default_profile_picture.png")
     password = db.Column(db.String(60), nullable=False)
     posts = db.relationship("Post", backref="author", lazy=True)
+
+    def get_reset_token(self, expire_sec=1800):
+        """Return a token for users to reset their passwords that will expire after the set number of seconds"""
+        s = Serializer(app.config["SECRET_KEY"], expire_sec)
+        return s.dumps({"user_id": self.id}).decode("utf-8")
+
+    @staticmethod
+    def verify_reset_token(token):
+        s = Serializer(app.config["SECRET_KEY"])
+        try:
+            user_id = s.loads(token)["user_id"]
+        except:
+            return None
+        return User.query.get(user_id)
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.profile_picture}')"
