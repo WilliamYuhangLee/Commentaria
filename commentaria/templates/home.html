@@ -28,6 +28,12 @@
         {% endif %}
     {% endfor %}
 {% endblock content %}
+{% block sidebar_title %}
+    <h3>Home</h3>
+{% endblock sidebar_title %}
+{% block sidebar_description %}
+    <p class='text-muted'>Your personal front page at Commentaria.</p>
+{% endblock sidebar_description %}
 {% block scripts %}
     {{ super() }}
     {{ moment.include_moment() }}
