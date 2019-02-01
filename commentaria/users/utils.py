@@ -17,7 +17,7 @@ def update_profile_picture(form_picture):
     # Upload image to Cloudinary
     cloudinary.uploader.upload(form_picture, public_id=random_filename, use_filename=False,
                                folder=_profile_picture_folder(),
-                               transformation=[{"width": 360, "height": 360}])
+                               transformation=[{"width": 360, "height": 360, "crop": "fit"}])
     # Return saved filename
     return random_filename
 
