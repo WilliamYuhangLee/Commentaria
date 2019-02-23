@@ -15,8 +15,8 @@ def load_user(user_id):
 
 # Association tables
 users_liked_posts = db.Table("users_liked_posts", db.metadata,
-                             db.Column("user_id", db.Integer, db.ForeignKey("users.id")),
-                             db.Column("post_id", db.Integer, db.ForeignKey("posts.id")))
+                             db.Column("user_id", db.Integer, db.ForeignKey("users.id"), primary_key=True),
+                             db.Column("post_id", db.Integer, db.ForeignKey("posts.id"), primary_key=True))
 
 
 # Database models
