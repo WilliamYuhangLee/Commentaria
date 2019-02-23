@@ -42,10 +42,7 @@ def create_app(config_class=Config):
     app.register_blueprint(main)
     app.register_blueprint(errors)
 
-    from commentaria.context_processor import context_processors
-
-    @app.context_processor
-    def utility_processors():
-        return context_processors
+    from commentaria.context_processor import import_context_processor
+    import_context_processor(app)
 
     return app
