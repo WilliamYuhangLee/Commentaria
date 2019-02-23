@@ -4,6 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_moment import Moment
+from flask_migrate import Migrate
 import cloudinary
 
 from commentaria.config import Config
@@ -15,6 +16,7 @@ login_manager.login_view = "users.login"  # which function to login
 login_manager.login_message_category = "info"  # set login message style (Bootstrap)
 mail = Mail()
 moment = Moment()
+migrate = Migrate()
 
 
 # Application Factory
@@ -22,11 +24,13 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
+    # Initialize extensions
     db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
+    migrate.init_app(app, db)
 
     cloudinary.config(cloud_name=app.config["CLOUDINARY_CLOUD_NAME"],
                       api_key=app.config["CLOUDINARY_API_KEY"],
