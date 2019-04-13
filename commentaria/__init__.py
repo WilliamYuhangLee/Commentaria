@@ -7,7 +7,7 @@ from flask_moment import Moment
 from flask_migrate import Migrate
 import cloudinary
 
-from commentaria.config import Config
+from commentaria import configs
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -20,9 +20,9 @@ migrate = Migrate()
 
 
 # Application Factory
-def create_app(config_class=Config):
+def create_app(config="Config"):
     app = Flask(__name__)
-    app.config.from_object(config_class)
+    app.config.from_object(configs.__name__ + "." + config)
 
     # Initialize extensions
     db.init_app(app)
